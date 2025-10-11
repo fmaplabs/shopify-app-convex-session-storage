@@ -7,7 +7,7 @@ import type {
   GenericQueryCtx,
 } from "convex/server";
 import { GenericId } from "convex/values";
-
+import { ConvexHttpClient } from "convex/browser";
 import { api } from "../component/_generated/api";
 
 /**
@@ -185,10 +185,13 @@ export class ShopifySessionStorage {
  * This uses the Convex client to call the component from outside Convex functions.
  */
 export class ConvexSessionStorageAdapter implements SessionStorage {
-  private client: any;
-  private componentApi: any;
+  private client: ConvexHttpClient;
+  private componentApi: UseApi<typeof api>;
 
-  constructor(convexClient: any, componentApi: any) {
+  constructor(
+    convexClient: ConvexHttpClient,
+    componentApi: UseApi<typeof api>
+  ) {
     this.client = convexClient;
     this.componentApi = componentApi;
   }
