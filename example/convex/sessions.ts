@@ -2,7 +2,7 @@ import { mutation, query, MutationCtx, QueryCtx } from "./_generated/server";
 import { ConvexError, v } from "convex/values";
 import { sessionFields } from "./schema";
 
-export const findSessionsByShop = query({
+export const findSessionsbyShop = query({
   args: {
     shop: v.string(),
   },
@@ -91,23 +91,7 @@ export const deleteSessions = mutation({
   },
 });
 
-export const cleanupExpiredSessions = mutation({
-  args: { currentTime: v.number() },
-  returns: v.object({ deleted: v.number() }),
-  handler: async (ctx, { currentTime }) => {
-    const expired = await ctx.db
-      .query("sessions")
-      .withIndex("by_expires", (q) => q.lt("expires", currentTime))
-      .collect();
-    const deleted = expired.length;
-    await Promise.all(
-      expired.map(async (expiredToken) => {
-        await ctx.db.delete(expiredToken._id);
-      })
-    );
-    return { deleted };
-  },
-});
+//helper functions
 
 export async function deleteSessionHelper(
   ctx: MutationCtx,

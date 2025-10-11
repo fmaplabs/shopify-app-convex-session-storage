@@ -78,7 +78,6 @@ export class ShopifySessionStorage {
         state: data.state,
         isOnline: data.isOnline,
       });
-
       if (data.scope) session.scope = data.scope;
       if (data.expires) session.expires = new Date(data.expires);
       if (data.accessToken) session.accessToken = data.accessToken;
@@ -314,7 +313,7 @@ export type UseApi<API> = Expand<{
   >
     ? FunctionReference<
         FType,
-        "internal",
+        "public",
         OpaqueIds<FArgs>,
         OpaqueIds<FReturnType>,
         FComponentPath
