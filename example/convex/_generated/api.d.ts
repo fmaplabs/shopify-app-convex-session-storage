@@ -43,19 +43,25 @@ export declare const internal: FilterApi<
 export declare const components: {
   shopifySessionStorage: {
     sessions: {
-      clearMultipleSessions: FunctionReference<
-        "mutation",
-        "internal",
-        { ids: Array<string> },
-        any
-      >;
-      clearSession: FunctionReference<
+      deleteSession: FunctionReference<
         "mutation",
         "internal",
         { id: string },
         any
       >;
-      getSessionById: FunctionReference<
+      deleteSessions: FunctionReference<
+        "mutation",
+        "internal",
+        { ids: Array<string> },
+        any
+      >;
+      findSessionsbyShop: FunctionReference<
+        "query",
+        "internal",
+        { shop: string },
+        any
+      >;
+      loadSession: FunctionReference<
         "query",
         "internal",
         { id: string },
@@ -82,12 +88,6 @@ export declare const components: {
           shop: string;
           state: string;
         } | null
-      >;
-      getSessionbyShop: FunctionReference<
-        "query",
-        "internal",
-        { shop: string },
-        any
       >;
       storeSession: FunctionReference<
         "mutation",
