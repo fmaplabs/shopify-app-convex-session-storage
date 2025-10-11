@@ -8,14 +8,13 @@
  * @module
  */
 
-import type * as sessions from "../sessions.js";
-import type * as shopify from "../shopify.js";
-
 import type {
   ApiFromModules,
   FilterApi,
   FunctionReference,
 } from "convex/server";
+import type * as sessions from "../sessions.js";
+import type * as shopify from "../shopify.js";
 
 /**
  * A utility for referencing Convex functions in your app's API.
@@ -29,94 +28,11 @@ declare const fullApi: ApiFromModules<{
   sessions: typeof sessions;
   shopify: typeof shopify;
 }>;
-declare const fullApiWithMounts: typeof fullApi;
-
 export declare const api: FilterApi<
-  typeof fullApiWithMounts,
+  typeof fullApi,
   FunctionReference<any, "public">
 >;
 export declare const internal: FilterApi<
-  typeof fullApiWithMounts,
+  typeof fullApi,
   FunctionReference<any, "internal">
 >;
-
-export declare const components: {
-  shopifySessionStorage: {
-    sessions: {
-      deleteSession: FunctionReference<
-        "mutation",
-        "internal",
-        { id: string },
-        any
-      >;
-      deleteSessions: FunctionReference<
-        "mutation",
-        "internal",
-        { ids: Array<string> },
-        any
-      >;
-      findSessionsbyShop: FunctionReference<
-        "query",
-        "internal",
-        { shop: string },
-        any
-      >;
-      loadSession: FunctionReference<
-        "query",
-        "internal",
-        { id: string },
-        {
-          accessToken?: string;
-          expires?: number;
-          id: string;
-          isOnline: boolean;
-          onlineAccessInfo?: {
-            associated_user?: {
-              account_owner: boolean;
-              collaborator: boolean;
-              email: string;
-              email_verified: boolean;
-              first_name: string;
-              id: number;
-              last_name: string;
-              locale: string;
-            };
-            associated_user_scope?: string;
-            expires_in: number;
-          };
-          scope?: string;
-          shop: string;
-          state: string;
-        } | null
-      >;
-      storeSession: FunctionReference<
-        "mutation",
-        "internal",
-        {
-          accessToken?: string;
-          expires?: number;
-          id: string;
-          isOnline: boolean;
-          onlineAccessInfo?: {
-            associated_user?: {
-              account_owner: boolean;
-              collaborator: boolean;
-              email: string;
-              email_verified: boolean;
-              first_name: string;
-              id: number;
-              last_name: string;
-              locale: string;
-            };
-            associated_user_scope?: string;
-            expires_in: number;
-          };
-          scope?: string;
-          shop: string;
-          state: string;
-        },
-        any
-      >;
-    };
-  };
-};
