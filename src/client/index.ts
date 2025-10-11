@@ -38,7 +38,7 @@ export class ShopifySessionStorage {
    */
   async storeSession(
     ctx: GenericMutationCtx<any>,
-    session: Session,
+    session: Session
   ): Promise<boolean> {
     try {
       await ctx.runMutation(this.component.sessions.storeSession, {
@@ -63,7 +63,7 @@ export class ShopifySessionStorage {
    */
   async loadSession(
     ctx: GenericQueryCtx<any>,
-    id: string,
+    id: string
   ): Promise<Session | undefined> {
     try {
       const data = await ctx.runQuery(this.component.sessions.loadSession, {
@@ -97,7 +97,7 @@ export class ShopifySessionStorage {
    */
   async deleteSession(
     ctx: GenericMutationCtx<any>,
-    id: string,
+    id: string
   ): Promise<boolean> {
     try {
       return await ctx.runMutation(this.component.sessions.deleteSession, {
@@ -114,7 +114,7 @@ export class ShopifySessionStorage {
    */
   async deleteSessions(
     ctx: GenericMutationCtx<any>,
-    ids: string[],
+    ids: string[]
   ): Promise<boolean> {
     try {
       return await ctx.runMutation(this.component.sessions.deleteSessions, {
@@ -131,12 +131,12 @@ export class ShopifySessionStorage {
    */
   async findSessionsByShop(
     ctx: GenericQueryCtx<any>,
-    shop: string,
+    shop: string
   ): Promise<Session[]> {
     try {
       const sessionsData = await ctx.runQuery(
         this.component.sessions.findSessionsByShop,
-        { shop },
+        { shop }
       );
 
       return sessionsData.map((data: any) => {
@@ -169,7 +169,7 @@ export class ShopifySessionStorage {
     try {
       const result = await ctx.runMutation(
         this.component.sessions.cleanupExpiredSessions,
-        { currentTime: Date.now() },
+        { currentTime: Date.now() }
       );
       return result.deleted;
     } catch (error) {
@@ -217,7 +217,7 @@ export class ConvexSessionStorageAdapter implements SessionStorage {
     try {
       const data = await this.client.query(
         this.componentApi.public.loadSession,
-        { id },
+        { id }
       );
       if (!data) return undefined;
 
@@ -245,7 +245,7 @@ export class ConvexSessionStorageAdapter implements SessionStorage {
     try {
       return await this.client.mutation(
         this.componentApi.public.deleteSession,
-        { id },
+        { id }
       );
     } catch (error) {
       console.error("Error deleting session:", error);
@@ -257,7 +257,7 @@ export class ConvexSessionStorageAdapter implements SessionStorage {
     try {
       return await this.client.mutation(
         this.componentApi.public.deleteSessions,
-        { ids },
+        { ids }
       );
     } catch (error) {
       console.error("Error deleting sessions:", error);
@@ -269,7 +269,7 @@ export class ConvexSessionStorageAdapter implements SessionStorage {
     try {
       const sessionsData = await this.client.query(
         this.componentApi.public.findSessionsByShop,
-        { shop },
+        { shop }
       );
 
       return sessionsData.map((data: any) => {

@@ -1,0 +1,28 @@
+{
+  "name": "component-usage",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "npm-run-all --parallel dev:backend",
+    "build": "vite build",
+    "dev:backend": "convex dev --live-component-sources --typecheck-components",
+    "predev": "convex dev --until-success",
+    "logs": "convex logs",
+    "lint": "tsc -p convex && eslint convex"
+  },
+  "dependencies": {
+    "@fmap-labs/shopify-app-convex-session-storage": "file:..",
+    "convex": "file:../node_modules/convex",
+    "prettier": "^3.5.3"
+  },
+  "devDependencies": {
+    "npm-run-all2": "^8.0.4",
+    "@eslint/eslintrc": "^3.1.0",
+    "@eslint/js": "^9.9.1",
+    "@typescript-eslint/eslint-plugin": "^8.33.0",
+    "@typescript-eslint/parser": "^8.33.0",
+    "eslint": "^9.9.1",
+    "globals": "^16.2.0",
+    "typescript": "^5.5.0"
+  }
+}

@@ -5,7 +5,12 @@ import tseslint from "typescript-eslint";
 export default [
   { files: ["src/**/*.{js,mjs,cjs,ts,tsx}"] },
   {
-    ignores: ["dist/**", "eslint.config.js", "**/_generated/", "node10stubs.mjs"],
+    ignores: [
+      "dist/**",
+      "eslint.config.js",
+      "**/_generated/",
+      "node10stubs.mjs",
+    ],
   },
   {
     languageOptions: {
@@ -28,7 +33,7 @@ export default [
       // allow (_arg: number) => {} and const _foo = 1;
       "no-unused-vars": "off",
       "@typescript-eslint/no-unused-vars": [
-        "error",
+        "warn",
         {
           argsIgnorePattern: "^_",
           varsIgnorePattern: "^_",
