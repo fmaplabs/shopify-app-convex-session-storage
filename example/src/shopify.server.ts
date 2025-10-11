@@ -1,10 +1,6 @@
-// app/shopify.server.js
-// Note that you don't need to import the node adapter if you're running on a different runtime.
-import "@shopify/shopify-app-remix/server/adapters/node";
-// Memory storage makes it easy to set an app up, but should never be used in production.
 import { ApiVersion, shopifyApp } from "@shopify/shopify-app-remix";
 import { ConvexSessionStorageAdapter } from "@fmap-labs/shopify-app-convex-session-storage";
-import { ConvexHttpClient } from "convex/";
+import { ConvexHttpClient } from "convex/browser";
 import { api } from "convex/_generated/api";
 const convexUrl = process.env.CONVEX_URL; // adjust to based on your framework
 const convex = new ConvexHttpClient(convexUrl);
