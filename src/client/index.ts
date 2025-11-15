@@ -8,7 +8,54 @@ import type {
 } from "convex/server";
 import { GenericId } from "convex/values";
 import { ConvexHttpClient } from "convex/browser";
-import { api } from "../component/_generated/api";
+
+/**
+ * Type helper to convert GenericId types to strings for component boundaries.
+ */
+export type OpaqueIds<T> =
+  T extends GenericId<infer _T>
+    ? string
+    : T extends (infer U)[]
+      ? OpaqueIds<U>[]
+      : T extends object
+        ? { [K in keyof T]: OpaqueIds<T[K]> }
+        : T;
+
+/**
+ * Type helper for using component APIs with opaque IDs.
+ */
+export type UseApi<API> = Expand<{
+  [mod in keyof API]: API[mod] extends FunctionReference<
+    infer FType,
+    "public",
+    infer FArgs,
+    infer FReturnType,
+    infer FComponentPath
+  >
+    ? FunctionReference<
+        FType,
+        "public",
+        OpaqueIds<FArgs>,
+        OpaqueIds<FReturnType>,
+        FComponentPath
+      >
+    : UseApi<API[mod]>;
+}>;
+
+/**
+ * Type helper for the Shopify Session Storage component API.
+ * This represents the shape of the component API that will be passed to the adapters.
+ */
+export interface ShopifySessionStorageAPI {
+  sessions: {
+    storeSession: FunctionReference<"mutation", "public", any, any>;
+    loadSession: FunctionReference<"query", "public", any, any>;
+    deleteSession: FunctionReference<"mutation", "public", any, any>;
+    deleteSessions: FunctionReference<"mutation", "public", any, any>;
+    findSessionsByShop: FunctionReference<"query", "public", any, any>;
+    cleanupExpiredSessions: FunctionReference<"mutation", "public", any, any>;
+  };
+}
 
 /**
  * Client-side wrapper for the Shopify Session Storage component.
@@ -19,7 +66,7 @@ import { api } from "../component/_generated/api";
  * Usage in user's Convex functions:
  * ```typescript
  * import { components } from "./_generated/api";
- * import { ShopifySessionStorage } from "@fmaplabs/shopify-app-convex-session-storage/client";
+ * import { ShopifySessionStorage } from "@fmap-labs/shopify-app-convex-session-storage";
  *
  * const sessionStorage = new ShopifySessionStorage(components.shopifySessionStorage);
  *
@@ -31,7 +78,11 @@ import { api } from "../component/_generated/api";
  * ```
  */
 export class ShopifySessionStorage {
-  constructor(private component: UseApi<typeof api>) {}
+  private component: any;
+
+  constructor(component: UseApi<ShopifySessionStorageAPI>) {
+    this.component = component;
+  }
 
   /**
    * Store a session in the component.
@@ -183,14 +234,24 @@ export class ShopifySessionStorage {
  * for use in non-Convex contexts (e.g., Express middleware).
  *
  * This uses the Convex client to call the component from outside Convex functions.
+ *
+ * Usage:
+ * ```typescript
+ * import { ConvexHttpClient } from "convex/browser";
+ * import { api } from "./convex/_generated/api";
+ * import { ConvexSessionStorageAdapter } from "@fmap-labs/shopify-app-convex-session-storage";
+ *
+ * const client = new ConvexHttpClient(process.env.CONVEX_URL!);
+ * const sessionStorage = new ConvexSessionStorageAdapter(client, api.shopifySessionStorage);
+ * ```
  */
 export class ConvexSessionStorageAdapter implements SessionStorage {
   private client: ConvexHttpClient;
-  private componentApi: UseApi<typeof api>;
+  private componentApi: any;
 
   constructor(
     convexClient: ConvexHttpClient,
-    componentApi: UseApi<typeof api>
+    componentApi: UseApi<ShopifySessionStorageAPI>
   ) {
     this.client = convexClient;
     this.componentApi = componentApi;
@@ -198,7 +259,7 @@ export class ConvexSessionStorageAdapter implements SessionStorage {
 
   async storeSession(session: Session): Promise<boolean> {
     try {
-      await this.client.mutation(this.componentApi.public.storeSession, {
+      await this.client.mutation(this.componentApi.sessions.storeSession, {
         id: session.id,
         shop: session.shop,
         state: session.state,
@@ -218,7 +279,7 @@ export class ConvexSessionStorageAdapter implements SessionStorage {
   async loadSession(id: string): Promise<Session | undefined> {
     try {
       const data = await this.client.query(
-        this.componentApi.public.loadSession,
+        this.componentApi.sessions.loadSession,
         { id }
       );
       if (!data) return undefined;
@@ -246,7 +307,7 @@ export class ConvexSessionStorageAdapter implements SessionStorage {
   async deleteSession(id: string): Promise<boolean> {
     try {
       return await this.client.mutation(
-        this.componentApi.public.deleteSession,
+        this.componentApi.sessions.deleteSession,
         { id }
       );
     } catch (error) {
@@ -258,7 +319,7 @@ export class ConvexSessionStorageAdapter implements SessionStorage {
   async deleteSessions(ids: string[]): Promise<boolean> {
     try {
       return await this.client.mutation(
-        this.componentApi.public.deleteSessions,
+        this.componentApi.sessions.deleteSessions,
         { ids }
       );
     } catch (error) {
@@ -270,7 +331,7 @@ export class ConvexSessionStorageAdapter implements SessionStorage {
   async findSessionsByShop(shop: string): Promise<Session[]> {
     try {
       const sessionsData = await this.client.query(
-        this.componentApi.public.findSessionsByShop,
+        this.componentApi.sessions.findSessionsByShop,
         { shop }
       );
 
@@ -296,30 +357,3 @@ export class ConvexSessionStorageAdapter implements SessionStorage {
     }
   }
 }
-
-export type OpaqueIds<T> =
-  T extends GenericId<infer _T>
-    ? string
-    : T extends (infer U)[]
-      ? OpaqueIds<U>[]
-      : T extends object
-        ? { [K in keyof T]: OpaqueIds<T[K]> }
-        : T;
-
-export type UseApi<API> = Expand<{
-  [mod in keyof API]: API[mod] extends FunctionReference<
-    infer FType,
-    "public",
-    infer FArgs,
-    infer FReturnType,
-    infer FComponentPath
-  >
-    ? FunctionReference<
-        FType,
-        "public",
-        OpaqueIds<FArgs>,
-        OpaqueIds<FReturnType>,
-        FComponentPath
-      >
-    : UseApi<API[mod]>;
-}>;

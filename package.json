@@ -3,7 +3,25 @@
   "version": "1.0.0",
   "author": "fmap(labs)",
   "license": "MIT",
-  "description": "Convex Adapter for Shopify apps sessions storage",
+  "description": "A Convex component for Shopify app session storage - store and manage Shopify OAuth sessions in your Convex database",
+  "keywords": [
+    "shopify",
+    "convex",
+    "session-storage",
+    "oauth",
+    "shopify-app",
+    "session-management",
+    "convex-component"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fmaplabs/shopify-app-convex-session-storage.git"
+  },
+  "homepage": "https://github.com/fmaplabs/shopify-app-convex-session-storage#readme",
+  "bugs": {
+    "url": "https://github.com/fmaplabs/shopify-app-convex-session-storage/issues"
+  },
+  "type": "module",
   "scripts": {
     "build": "npm run build:esm && npm run build:cjs",
     "build:esm": "tsc --project ./esm.json && echo '{\\n  \"type\": \"module\"\\n}' > dist/esm/package.json",
@@ -19,37 +37,47 @@
   },
   "files": [
     "dist",
-    "src",
-    "react"
+    "src/component",
+    "README.md",
+    "LICENSE"
   ],
   "exports": {
     "./package.json": "./package.json",
     ".": {
       "import": {
         "@fmap-labs/component-source": "./src/client/index.ts",
-        "types": "./dist/esm/client/index.d.ts",
-        "default": "./dist/esm/client/index.js"
+        "types": "./dist/esm/index.d.ts",
+        "default": "./dist/esm/index.js"
       },
       "require": {
         "@fmap-labs/component-source": "./src/client/index.ts",
-        "types": "./dist/commonjs/client/index.d.ts",
-        "default": "./dist/commonjs/client/index.js"
+        "types": "./dist/commonjs/index.d.ts",
+        "default": "./dist/commonjs/index.js"
       }
     },
     "./convex.config": {
       "import": {
         "@fmap-labs/component-source": "./src/component/convex.config.ts",
-        "types": "./dist/esm/component/convex.config.d.ts",
-        "default": "./dist/esm/component/convex.config.js"
+        "types": "./src/component/convex.config.d.ts",
+        "default": "./src/component/convex.config.js"
       }
     }
   },
+  "main": "./dist/commonjs/index.js",
+  "types": "./dist/commonjs/index.d.ts",
+  "module": "./dist/esm/index.js",
+  "dependencies": {
+    "@shopify/shopify-api": "^12.0.0",
+    "@shopify/shopify-app-session-storage": "^4.0.0",
+    "convex-helpers": "^0.1.67"
+  },
   "peerDependencies": {
-    "convex": ">=1.24.8 <1.35.0",
-    "convex-svelte": "^0.0.11",
-    "react": "^18 || ^19",
-    "react-dom": "^18 || ^19",
-    "svelte": ">=5.0.0"
+    "convex": ">=1.17.0"
+  },
+  "peerDependenciesMeta": {
+    "convex": {
+      "optional": false
+    }
   },
   "devDependencies": {
     "@eslint/js": "^9.9.1",
@@ -58,15 +86,10 @@
     "globals": "^16.2.0",
     "prettier": "^3.5.3",
     "typescript": "^5.8.3",
-    "typescript-eslint": "^8.4.0"
+    "typescript-eslint": "^8.4.0",
+    "vitest": "^1.0.0"
   },
-  "main": "./dist/commonjs/client/index.js",
-  "types": "./dist/commonjs/client/index.d.ts",
-  "module": "./dist/esm/client/index.js",
-  "dependencies": {
-    "convex-helpers": "^0.1.67",
-    "@shopify/shopify-api": "^12.0.0",
-    "@shopify/shopify-app-session-storage": "^4.0.0"
-  },
-  "type": "module"
+  "engines": {
+    "node": ">=18.0.0"
+  }
 }
