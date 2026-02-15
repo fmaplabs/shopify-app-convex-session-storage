@@ -1,58 +1,63 @@
-import { action, mutation, query } from "./_generated/server.js";
+import { mutation, query } from "./_generated/server.js";
 import { components } from "./_generated/api.js";
-import { exposeApi } from "@fmaplabs/shopify-app-convex-session-storage";
+import { ShopifySessionClient } from "@fmaplabs/shopify-app-convex-session-storage";
 import { v } from "convex/values";
-import { Auth } from "convex/server";
 
-// Environment variables aren't available in the component,
-// so we need to pass it in as an argument to the component when necessary.
-const BASE_URL = process.env.BASE_URL ?? "https://pirate.monkeyness.com";
+const sessionClient = new ShopifySessionClient(
+  components.shopifyAppConvexSessionStorage,
+);
 
-export const addComment = mutation({
-  args: { text: v.string(), targetId: v.string() },
+export const storeSession = mutation({
+  args: {
+    id: v.string(),
+    shop: v.string(),
+    isOnline: v.boolean(),
+    scope: v.optional(v.string()),
+    accessToken: v.optional(v.string()),
+  },
   handler: async (ctx, args) => {
-    return await ctx.runMutation(components.shopifyAppConvexSessionStorage.lib.add, {
-      text: args.text,
-      targetId: args.targetId,
-      userId: await getAuthUserId(ctx),
-    });
+    return await sessionClient.storeSession(ctx, args);
   },
 });
 
-export const listComments = query({
-  args: { targetId: v.string() },
+export const loadSession = query({
+  args: { id: v.string() },
   handler: async (ctx, args) => {
-    return await ctx.runQuery(components.shopifyAppConvexSessionStorage.lib.list, {
-      targetId: args.targetId,
-    });
+    return await sessionClient.loadSession(ctx, args);
   },
 });
 
-export const translateComment = action({
-  args: { commentId: v.string() },
+export const deleteSession = mutation({
+  args: { id: v.string() },
   handler: async (ctx, args) => {
-    return await ctx.runAction(components.shopifyAppConvexSessionStorage.lib.translate, {
-      baseUrl: BASE_URL,
-      commentId: args.commentId,
-    });
+    return await sessionClient.deleteSession(ctx, args);
   },
 });
 
-// Here is an alternative way to use the component's methods directly by re-exporting
-// the component's API:
-export const { list, add, translate } = exposeApi(components.shopifyAppConvexSessionStorage, {
-  auth: async (ctx, operation) => {
-    const userId = await getAuthUserId(ctx);
-    if (userId === null && operation.type !== "read") {
-      throw new Error("Unauthorized");
-    }
-    return userId;
+export const findSessionsByShop = query({
+  args: { shop: v.string() },
+  handler: async (ctx, args) => {
+    return await sessionClient.findSessionsByShop(ctx, args);
   },
-  baseUrl: BASE_URL,
 });
 
-// You can also register HTTP routes for the component. See http.ts for an example.
+export const getOfflineSessionByShop = query({
+  args: { shop: v.string() },
+  handler: async (ctx, args) => {
+    return await sessionClient.getOfflineSessionByShop(ctx, args);
+  },
+});
 
-async function getAuthUserId(ctx: { auth: Auth }) {
-  return (await ctx.auth.getUserIdentity())?.subject ?? "anonymous";
-}
+export const deleteSessionsByShop = mutation({
+  args: { shop: v.string() },
+  handler: async (ctx, args) => {
+    return await sessionClient.deleteSessionsByShop(ctx, args);
+  },
+});
+
+export const cleanupExpiredSessions = mutation({
+  args: {},
+  handler: async (ctx) => {
+    return await sessionClient.cleanupExpiredSessions(ctx);
+  },
+});

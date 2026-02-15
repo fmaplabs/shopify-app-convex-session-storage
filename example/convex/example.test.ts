@@ -3,24 +3,59 @@ import { initConvexTest } from "./setup.test";
 import { api } from "./_generated/api";
 
 describe("example", () => {
-  beforeEach(async () => {
+  beforeEach(() => {
     vi.useFakeTimers();
   });
 
-  afterEach(async () => {
+  afterEach(() => {
     vi.useRealTimers();
   });
 
-  test("addComment and listComments", async () => {
+  test("store and load session", async () => {
     const t = initConvexTest();
-    const targetId = "test-subject-1";
-    const commentId = await t.mutation(api.example.addComment, {
-      text: "My comment",
-      targetId,
+    await t.mutation(api.example.storeSession, {
+      id: "offline_shop.myshopify.com",
+      shop: "shop.myshopify.com",
+      isOnline: false,
+      scope: "read_products",
+      accessToken: "shpat_test",
     });
-    expect(commentId).toBeDefined();
-    const comments = await t.query(api.example.listComments, { targetId });
-    expect(comments).toHaveLength(1);
-    expect(comments[0].text).toBe("My comment");
+    const loaded = await t.query(api.example.loadSession, {
+      id: "offline_shop.myshopify.com",
+    });
+    expect(loaded).not.toBeNull();
+    expect(loaded!.id).toBe("offline_shop.myshopify.com");
+    expect(loaded!.accessToken).toBe("shpat_test");
+  });
+
+  test("delete session", async () => {
+    const t = initConvexTest();
+    await t.mutation(api.example.storeSession, {
+      id: "offline_shop.myshopify.com",
+      shop: "shop.myshopify.com",
+      isOnline: false,
+    });
+    const deleted = await t.mutation(api.example.deleteSession, {
+      id: "offline_shop.myshopify.com",
+    });
+    expect(deleted).toBe(true);
+  });
+
+  test("find sessions by shop", async () => {
+    const t = initConvexTest();
+    await t.mutation(api.example.storeSession, {
+      id: "offline_shop.myshopify.com",
+      shop: "shop.myshopify.com",
+      isOnline: false,
+    });
+    await t.mutation(api.example.storeSession, {
+      id: "online_shop.myshopify.com_1",
+      shop: "shop.myshopify.com",
+      isOnline: true,
+    });
+    const sessions = await t.query(api.example.findSessionsByShop, {
+      shop: "shop.myshopify.com",
+    });
+    expect(sessions).toHaveLength(2);
   });
 });

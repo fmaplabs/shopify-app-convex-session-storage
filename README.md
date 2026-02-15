@@ -1,91 +1,20 @@
-# Convex Component Template
+# Convex Shopify Session Storage
 
-This is a Convex component, ready to be published on npm.
+[![npm version](https://badge.fury.io/js/@fmaplabs%2Fshopify-app-convex-session-storage.svg)](https://badge.fury.io/js/@fmaplabs%2Fshopify-app-convex-session-storage)
 
-To create your own component:
+A [Convex component](https://docs.convex.dev/components) that provides Shopify session storage backed by a Convex database. Drop-in session persistence for Shopify apps built on Convex.
 
-1. Write code in src/component for your component. Component-specific tables,
-   queries, mutations, and actions go here.
-1. Write code in src/client for the Class that interfaces with the component.
-   This is the bridge your users will access to get information into and out of
-   your component
-1. Write example usage in example/convex/example.ts.
-1. Delete the text in this readme until `---` and flesh out the README.
-1. Publish to npm with `npm run alpha` or `npm run release`.
-
-To develop your component run a dev process in the example project:
-
-```sh
-npm i
-npm run dev
-```
-
-`npm i` will do the install and an initial build. `npm run dev` will start a
-file watcher to re-build the component, as well as the example project frontend
-and backend, which does codegen and installs the component.
-
-Modify the schema and index files in src/component/ to define your component.
-
-Write a client for using this component in src/client/index.ts.
-
-If you won't be adding frontend code (e.g. React components) to this component
-you can delete "./react" references in package.json and "src/react/" directory.
-If you will be adding frontend code, add a peer dependency on React in
-package.json.
-
-### Component Directory structure
-
-```
-.
-├── README.md           documentation of your component
-├── package.json        component name, version number, other metadata
-├── package-lock.json   Components are like libraries, package-lock.json
-│                       is .gitignored and ignored by consumers.
-├── src
-│   ├── component/
-│   │   ├── _generated/ Files here are generated for the component.
-│   │   ├── convex.config.ts  Name your component here and use other components
-│   │   ├── lib.ts    Define functions here and in new files in this directory
-│   │   └── schema.ts   schema specific to this component
-│   ├── client/
-│   │   └── index.ts    Code that needs to run in the app that uses the
-│   │                   component. Generally the app interacts directly with
-│   │                   the component's exposed API (src/component/*).
-│   └── react/          Code intended to be used on the frontend goes here.
-│       │               Your are free to delete this if this component
-│       │               does not provide code.
-│       └── index.ts
-├── example/            example Convex app that uses this component
-│   └── convex/
-│       ├── _generated/       Files here are generated for the example app.
-│       ├── convex.config.ts  Imports and uses this component
-│       ├── myFunctions.ts    Functions that use the component
-│       └── schema.ts         Example app schema
-└── dist/               Publishing artifacts will be created here.
-```
-
----
-
-# Convex Shopify App Convex Session Storage
-
-[![npm version](https://badge.fury.io/js/@example%2Fshopify-app-convex-session-storage.svg)](https://badge.fury.io/js/@example%2Fshopify-app-convex-session-storage)
-
-<!-- START: Include on https://convex.dev/components -->
-
-- [ ] What is some compelling syntax as a hook?
-- [ ] Why should you use this component?
-- [ ] Links to docs / other resources?
-
-Found a bug? Feature request?
-[File it here](https://github.com/fmaplabs/shopify-app-convex-session-storage/issues).
+Found a bug? Feature request? [File it here](https://github.com/fmaplabs/shopify-app-convex-session-storage/issues).
 
 ## Installation
 
-Create a `convex.config.ts` file in your app's `convex/` folder and install the
-component by calling `use`:
+```sh
+npm install @fmaplabs/shopify-app-convex-session-storage
+```
+
+Register the component in your `convex/convex.config.ts`:
 
 ```ts
-// convex/convex.config.ts
 import { defineApp } from "convex/server";
 import shopifyAppConvexSessionStorage from "@fmaplabs/shopify-app-convex-session-storage/convex.config.js";
 
@@ -97,50 +26,84 @@ export default app;
 
 ## Usage
 
-```ts
-import { components } from "./_generated/api";
+Create a `ShopifySessionClient` instance and use it in your Convex functions:
 
-export const addComment = mutation({
-  args: { text: v.string(), targetId: v.string() },
+```ts
+import { mutation, query } from "./_generated/server.js";
+import { components } from "./_generated/api.js";
+import { ShopifySessionClient } from "@fmaplabs/shopify-app-convex-session-storage";
+import { v } from "convex/values";
+
+const sessionClient = new ShopifySessionClient(
+  components.shopifyAppConvexSessionStorage,
+);
+
+export const storeSession = mutation({
+  args: {
+    id: v.string(),
+    shop: v.string(),
+    isOnline: v.boolean(),
+    scope: v.optional(v.string()),
+    accessToken: v.optional(v.string()),
+  },
   handler: async (ctx, args) => {
-    return await ctx.runMutation(components.shopifyAppConvexSessionStorage.lib.add, {
-      text: args.text,
-      targetId: args.targetId,
-      userId: await getAuthUserId(ctx),
-    });
+    return await sessionClient.storeSession(ctx, args);
+  },
+});
+
+export const loadSession = query({
+  args: { id: v.string() },
+  handler: async (ctx, args) => {
+    return await sessionClient.loadSession(ctx, args);
+  },
+});
+
+export const deleteSession = mutation({
+  args: { id: v.string() },
+  handler: async (ctx, args) => {
+    return await sessionClient.deleteSession(ctx, args);
   },
 });
 ```
 
-See more example usage in [example.ts](./example/convex/example.ts).
+See [example/convex/example.ts](./example/convex/example.ts) for a complete example.
 
-### HTTP Routes
+## API
 
-You can register HTTP routes for the component to expose HTTP endpoints:
+### `ShopifySessionClient`
+
+| Method | Type | Description |
+|--------|------|-------------|
+| `loadSession(ctx, { id })` | query | Load a session by ID |
+| `storeSession(ctx, session)` | mutation | Create or update a session (upsert) |
+| `deleteSession(ctx, { id })` | mutation | Delete a session by ID |
+| `deleteSessions(ctx, { ids })` | mutation | Delete multiple sessions by ID |
+| `findSessionsByShop(ctx, { shop })` | query | Find all sessions for a shop |
+| `getOfflineSessionByShop(ctx, { shop })` | query | Get the offline session for a shop |
+| `deleteSessionsByShop(ctx, { shop })` | mutation | Delete all sessions for a shop |
+| `cleanupExpiredSessions(ctx)` | mutation | Delete all expired sessions |
+| `updateScopes(ctx, { id, scope })` | mutation | Update scopes on a session |
+
+### Types
 
 ```ts
-import { httpRouter } from "convex/server";
-import { registerRoutes } from "@fmaplabs/shopify-app-convex-session-storage";
-import { components } from "./_generated/api";
-
-const http = httpRouter();
-
-registerRoutes(http, components.shopifyAppConvexSessionStorage, {
-  pathPrefix: "/comments",
-});
-
-export default http;
+import type {
+  ShopifySession,
+  ShopifySessionInput,
+  OnlineAccessInfo,
+  AssociatedUser,
+} from "@fmaplabs/shopify-app-convex-session-storage";
 ```
 
-This will expose a GET endpoint that returns the most recent comment as JSON.
-The endpoint requires a `targetId` query parameter. See
-[http.ts](./example/convex/http.ts) for a complete example.
-
-<!-- END: Include on https://convex.dev/components -->
-
-Run the example:
+## Development
 
 ```sh
 npm i
 npm run dev
+```
+
+Run tests:
+
+```sh
+npm test
 ```
