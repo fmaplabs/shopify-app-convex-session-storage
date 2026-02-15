@@ -55,7 +55,9 @@ function SessionManager() {
         </button>
       </div>
 
-      <h3>Sessions for {shop} ({sessions?.length ?? 0})</h3>
+      <h3>
+        Sessions for {shop} ({sessions?.length ?? 0})
+      </h3>
       {sessions?.length === 0 && (
         <p style={{ color: "#888", fontStyle: "italic" }}>
           No sessions. Create one above.
@@ -80,7 +82,8 @@ function SessionManager() {
               <br />
               <small>
                 {session.isOnline ? "Online" : "Offline"} | Scope:{" "}
-                {session.scope ?? "none"} | Token: {session.accessToken ?? "none"}
+                {session.scope ?? "none"} | Token:{" "}
+                {session.accessToken ?? "none"}
               </small>
             </div>
             <button
