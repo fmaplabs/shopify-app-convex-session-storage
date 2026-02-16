@@ -2,9 +2,12 @@
 
 [![npm version](https://badge.fury.io/js/@fmaplabs%2Fshopify-app-convex-session-storage.svg)](https://badge.fury.io/js/@fmaplabs%2Fshopify-app-convex-session-storage)
 
-A [Convex component](https://docs.convex.dev/components) that provides Shopify session storage backed by a Convex database. Drop-in session persistence for Shopify apps built on Convex.
+A [Convex component](https://docs.convex.dev/components) that provides Shopify
+session storage backed by a Convex database. Drop-in session persistence for
+Shopify apps built on Convex.
 
-Found a bug? Feature request? [File it here](https://github.com/fmaplabs/shopify-app-convex-session-storage/issues).
+Found a bug? Feature request?
+[File it here](https://github.com/fmaplabs/shopify-app-convex-session-storage/issues).
 
 ## Installation
 
@@ -66,23 +69,24 @@ export const deleteSession = mutation({
 });
 ```
 
-See [example/convex/example.ts](./example/convex/example.ts) for a complete example.
+See [example/convex/example.ts](./example/convex/example.ts) for a complete
+example.
 
 ## API
 
 ### `ShopifySessionClient`
 
-| Method | Type | Description |
-|--------|------|-------------|
-| `loadSession(ctx, { id })` | query | Load a session by ID |
-| `storeSession(ctx, session)` | mutation | Create or update a session (upsert) |
-| `deleteSession(ctx, { id })` | mutation | Delete a session by ID |
-| `deleteSessions(ctx, { ids })` | mutation | Delete multiple sessions by ID |
-| `findSessionsByShop(ctx, { shop })` | query | Find all sessions for a shop |
-| `getOfflineSessionByShop(ctx, { shop })` | query | Get the offline session for a shop |
-| `deleteSessionsByShop(ctx, { shop })` | mutation | Delete all sessions for a shop |
-| `cleanupExpiredSessions(ctx)` | mutation | Delete all expired sessions |
-| `updateScopes(ctx, { id, scope })` | mutation | Update scopes on a session |
+| Method                                   | Type     | Description                         |
+| ---------------------------------------- | -------- | ----------------------------------- |
+| `loadSession(ctx, { id })`               | query    | Load a session by ID                |
+| `storeSession(ctx, session)`             | mutation | Create or update a session (upsert) |
+| `deleteSession(ctx, { id })`             | mutation | Delete a session by ID              |
+| `deleteSessions(ctx, { ids })`           | mutation | Delete multiple sessions by ID      |
+| `findSessionsByShop(ctx, { shop })`      | query    | Find all sessions for a shop        |
+| `getOfflineSessionByShop(ctx, { shop })` | query    | Get the offline session for a shop  |
+| `deleteSessionsByShop(ctx, { shop })`    | mutation | Delete all sessions for a shop      |
+| `cleanupExpiredSessions(ctx)`            | mutation | Delete all expired sessions         |
+| `updateScopes(ctx, { id, scope })`       | mutation | Update scopes on a session          |
 
 ### Types
 
@@ -107,3 +111,26 @@ Run tests:
 ```sh
 npm test
 ```
+
+### License
+
+MIT License
+
+Copyright (c) 2026 fmap labs
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
