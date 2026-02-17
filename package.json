@@ -67,13 +67,20 @@
         }
     },
     "peerDependencies": {
-        "convex": "^1.31.7"
+        "convex": "^1.31.7",
+        "@shopify/shopify-api": "^12.0.0"
+    },
+    "peerDependenciesMeta": {
+        "@shopify/shopify-api": {
+            "optional": true
+        }
     },
     "devDependencies": {
         "@convex-dev/eslint-plugin": "^1.1.1",
         "@edge-runtime/vm": "^5.0.0",
         "@eslint/eslintrc": "^3.3.3",
         "@eslint/js": "9.39.2",
+        "@shopify/shopify-api": "^12.3.0",
         "@types/node": "^24.10.11",
         "@types/react": "^19.2.13",
         "@types/react-dom": "^19.2.3",
@@ -97,5 +104,8 @@
         "vitest": "4.0.18"
     },
     "types": "./dist/client/index.d.ts",
-    "module": "./dist/client/index.js"
+    "module": "./dist/client/index.js",
+    "dependencies": {
+        "@shopify/shopify-app-session-storage": "^4.0.5"
+    }
 }

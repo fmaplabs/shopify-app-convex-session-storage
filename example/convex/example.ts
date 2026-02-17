@@ -34,6 +34,13 @@ export const deleteSession = mutation({
   },
 });
 
+export const deleteSessions = mutation({
+  args: { ids: v.array(v.string()) },
+  handler: async (ctx, args) => {
+    return await sessionClient.deleteSessions(ctx, args);
+  },
+});
+
 export const findSessionsByShop = query({
   args: { shop: v.string() },
   handler: async (ctx, args) => {

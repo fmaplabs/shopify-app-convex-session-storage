@@ -6,6 +6,11 @@ import type {
 import type { ComponentApi } from "../component/_generated/component.js";
 
 export type { ComponentApi };
+export {
+  ConvexSessionStorage,
+  type ConvexSessionClient,
+  type SessionFunctionRefs,
+} from "./session-storage.js";
 
 export type AssociatedUser = {
   id: number;
