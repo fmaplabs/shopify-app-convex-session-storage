@@ -40,6 +40,8 @@ export type ShopifySession = {
   expires?: string;
   accessToken?: string;
   onlineAccessInfo?: OnlineAccessInfo;
+  refreshToken?: string;
+  refreshTokenExpires?: string;
 };
 
 export type ShopifySessionInput = {
@@ -51,6 +53,8 @@ export type ShopifySessionInput = {
   expires?: string;
   accessToken?: string;
   onlineAccessInfo?: OnlineAccessInfo;
+  refreshToken?: string;
+  refreshTokenExpires?: string;
 };
 
 type QueryCtx = Pick<GenericQueryCtx<GenericDataModel>, "runQuery">;

@@ -58,6 +58,8 @@ function sessionToInput(session: Session): ShopifySessionInput {
           },
         }
       : undefined,
+    refreshToken: session.refreshToken,
+    refreshTokenExpires: session.refreshTokenExpires?.toISOString(),
   };
 }
 
@@ -71,6 +73,8 @@ function dataToSession(data: ShopifySession): Session {
     expires: data.expires ? new Date(data.expires) : undefined,
     accessToken: data.accessToken,
     onlineAccessInfo: data.onlineAccessInfo,
+    refreshToken: data.refreshToken,
+    refreshTokenExpires: data.refreshTokenExpires ? new Date(data.refreshTokenExpires) : undefined,
   });
 }
 

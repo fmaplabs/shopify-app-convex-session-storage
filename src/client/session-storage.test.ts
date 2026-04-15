@@ -177,6 +177,48 @@ describe("ConvexSessionStorage", () => {
     });
   });
 
+  test("round-trips refreshToken and refreshTokenExpires", async () => {
+    const client = createMockClient();
+    client.mutation.mockResolvedValue(null);
+    const storage = new ConvexSessionStorage(client, fns);
+
+    const refreshTokenExpires = new Date("2026-06-01T12:00:00.000Z");
+    const session = new Session({
+      id: "offline_shop.myshopify.com",
+      shop: "shop.myshopify.com",
+      state: "abc123",
+      isOnline: false,
+      accessToken: "shpat_test",
+      refreshToken: "shprt_refresh_test",
+      refreshTokenExpires,
+    });
+
+    await storage.storeSession(session);
+
+    const storeArgs = client.mutation.mock.calls[0]![1];
+    expect(storeArgs.refreshToken).toBe("shprt_refresh_test");
+    expect(storeArgs.refreshTokenExpires).toBe("2026-06-01T12:00:00.000Z");
+
+    // Now load it back
+    const stored: ShopifySession = {
+      _id: "conv_abc",
+      _creationTime: 1234567890,
+      id: "offline_shop.myshopify.com",
+      shop: "shop.myshopify.com",
+      state: "abc123",
+      isOnline: false,
+      accessToken: "shpat_test",
+      refreshToken: "shprt_refresh_test",
+      refreshTokenExpires: "2026-06-01T12:00:00.000Z",
+    };
+    client.query.mockResolvedValue(stored);
+
+    const loaded = await storage.loadSession("offline_shop.myshopify.com");
+
+    expect(loaded!.refreshToken).toBe("shprt_refresh_test");
+    expect(loaded!.refreshTokenExpires).toEqual(new Date("2026-06-01T12:00:00.000Z"));
+  });
+
   test("findSessionsByShop converts all results to Session instances", async () => {
     const client = createMockClient();
     const stored: ShopifySession[] = [

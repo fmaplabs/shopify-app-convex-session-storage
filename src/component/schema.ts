@@ -27,6 +27,8 @@ export const sessionFieldsValidator = {
   expires: v.optional(v.string()),
   accessToken: v.optional(v.string()),
   onlineAccessInfo: v.optional(onlineAccessInfoValidator),
+  refreshToken: v.optional(v.string()),
+  refreshTokenExpires: v.optional(v.string()),
 };
 
 export default defineSchema({
