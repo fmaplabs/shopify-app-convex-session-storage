@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@shopify/shopify-app-session-storage':
-        specifier: ^4.0.5
-        version: 4.0.5(@shopify/shopify-api@13.0.0)
+        specifier: ^5.0.0
+        version: 5.0.0(@shopify/shopify-api@13.0.0)
     devDependencies:
       '@convex-dev/eslint-plugin':
         specifier: ^1.1.1
@@ -794,10 +794,10 @@ packages:
     resolution: {integrity: sha512-tf55PjnIoDY6wjv9gJB1FMYoRmalUCdB8ayPLlPwmDUzCRCKfbQdKrBEX1jnKRmSm7EvtjkUSqbI60v0/jAk9Q==}
     engines: {node: '>=20.0.0'}
 
-  '@shopify/shopify-app-session-storage@4.0.5':
-    resolution: {integrity: sha512-ZL6tV8hccOO1nTLmj5rbzl++SZhgokQ73CY4v30MRTem/IhbneQag3/tUg9rPjAaDrROEyokGeJTgOq2gD+1hg==}
+  '@shopify/shopify-app-session-storage@5.0.0':
+    resolution: {integrity: sha512-hFUeDGmA4NJmnsq0peYxYIhCzPtXzP9dKjoz04VwWq0XTFzmjy+6yLWY9LFNI4gSiK3Mws3FSLKaatd8TqIj2g==}
     peerDependencies:
-      '@shopify/shopify-api': ^12.0.0
+      '@shopify/shopify-api': ^13.0.0
 
   '@shopify/storefront-api-client@1.0.10':
     resolution: {integrity: sha512-A0ItFW58L5+y/jnnJDEsmt2YcQSt2BG+pNoQOYRpPBJaOLpTj7A13q1QVrE5XYVGZCA6ZQ6FqAtgosHHrkut0Q==}
@@ -2604,7 +2604,7 @@ snapshots:
       lossless-json: 4.3.0
       tslib: 2.8.1
 
-  '@shopify/shopify-app-session-storage@4.0.5(@shopify/shopify-api@13.0.0)':
+  '@shopify/shopify-app-session-storage@5.0.0(@shopify/shopify-api@13.0.0)':
     dependencies:
       '@shopify/shopify-api': 13.0.0
 

@@ -106,6 +106,6 @@
     "types": "./dist/client/index.d.ts",
     "module": "./dist/client/index.js",
     "dependencies": {
-        "@shopify/shopify-app-session-storage": "^4.0.5"
+        "@shopify/shopify-app-session-storage": "^5.0.0"
     }
 }
