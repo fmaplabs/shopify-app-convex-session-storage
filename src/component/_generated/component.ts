@@ -10,45 +10,6 @@
 
 import type { FunctionReference } from "convex/server";
 
-type OnlineAccessInfo = {
-  expires_in: number;
-  associated_user_scope: string;
-  associated_user: {
-    id: number;
-    first_name: string;
-    last_name: string;
-    email: string;
-    account_owner: boolean;
-    locale: string;
-    collaborator: boolean;
-    email_verified: boolean;
-  };
-};
-
-type SessionDoc = {
-  _creationTime: number;
-  _id: string;
-  id: string;
-  shop: string;
-  state?: string;
-  isOnline: boolean;
-  scope?: string;
-  expires?: string;
-  accessToken?: string;
-  onlineAccessInfo?: OnlineAccessInfo;
-};
-
-type SessionInput = {
-  id: string;
-  shop: string;
-  state?: string;
-  isOnline: boolean;
-  scope?: string;
-  expires?: string;
-  accessToken?: string;
-  onlineAccessInfo?: OnlineAccessInfo;
-};
-
 /**
  * A utility for referencing a Convex component's exposed API.
  *
@@ -63,18 +24,11 @@ type SessionInput = {
 export type ComponentApi<Name extends string | undefined = string | undefined> =
   {
     lib: {
-      loadSession: FunctionReference<
-        "query",
-        "internal",
-        { id: string },
-        SessionDoc | null,
-        Name
-      >;
-      storeSession: FunctionReference<
+      cleanupExpiredSessions: FunctionReference<
         "mutation",
         "internal",
-        SessionInput,
-        null,
+        {},
+        number,
         Name
       >;
       deleteSession: FunctionReference<
@@ -91,20 +45,6 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
         boolean,
         Name
       >;
-      findSessionsByShop: FunctionReference<
-        "query",
-        "internal",
-        { shop: string },
-        Array<SessionDoc>,
-        Name
-      >;
-      getOfflineSessionByShop: FunctionReference<
-        "query",
-        "internal",
-        { shop: string },
-        SessionDoc | null,
-        Name
-      >;
       deleteSessionsByShop: FunctionReference<
         "mutation",
         "internal",
@@ -112,11 +52,134 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
         null,
         Name
       >;
-      cleanupExpiredSessions: FunctionReference<
+      findSessionsByShop: FunctionReference<
+        "query",
+        "internal",
+        { shop: string },
+        Array<{
+          _creationTime: number;
+          _id: string;
+          accessToken?: string;
+          expires?: string;
+          id: string;
+          isOnline: boolean;
+          onlineAccessInfo?: {
+            associated_user: {
+              account_owner: boolean;
+              collaborator: boolean;
+              email: string;
+              email_verified: boolean;
+              first_name: string;
+              id: number;
+              last_name: string;
+              locale: string;
+            };
+            associated_user_scope: string;
+            expires_in: number;
+          };
+          refreshToken?: string;
+          refreshTokenExpires?: string;
+          scope?: string;
+          shop: string;
+          state?: string;
+        }>,
+        Name
+      >;
+      getOfflineSessionByShop: FunctionReference<
+        "query",
+        "internal",
+        { shop: string },
+        null | {
+          _creationTime: number;
+          _id: string;
+          accessToken?: string;
+          expires?: string;
+          id: string;
+          isOnline: boolean;
+          onlineAccessInfo?: {
+            associated_user: {
+              account_owner: boolean;
+              collaborator: boolean;
+              email: string;
+              email_verified: boolean;
+              first_name: string;
+              id: number;
+              last_name: string;
+              locale: string;
+            };
+            associated_user_scope: string;
+            expires_in: number;
+          };
+          refreshToken?: string;
+          refreshTokenExpires?: string;
+          scope?: string;
+          shop: string;
+          state?: string;
+        },
+        Name
+      >;
+      loadSession: FunctionReference<
+        "query",
+        "internal",
+        { id: string },
+        null | {
+          _creationTime: number;
+          _id: string;
+          accessToken?: string;
+          expires?: string;
+          id: string;
+          isOnline: boolean;
+          onlineAccessInfo?: {
+            associated_user: {
+              account_owner: boolean;
+              collaborator: boolean;
+              email: string;
+              email_verified: boolean;
+              first_name: string;
+              id: number;
+              last_name: string;
+              locale: string;
+            };
+            associated_user_scope: string;
+            expires_in: number;
+          };
+          refreshToken?: string;
+          refreshTokenExpires?: string;
+          scope?: string;
+          shop: string;
+          state?: string;
+        },
+        Name
+      >;
+      storeSession: FunctionReference<
         "mutation",
         "internal",
-        Record<string, never>,
-        number,
+        {
+          accessToken?: string;
+          expires?: string;
+          id: string;
+          isOnline: boolean;
+          onlineAccessInfo?: {
+            associated_user: {
+              account_owner: boolean;
+              collaborator: boolean;
+              email: string;
+              email_verified: boolean;
+              first_name: string;
+              id: number;
+              last_name: string;
+              locale: string;
+            };
+            associated_user_scope: string;
+            expires_in: number;
+          };
+          refreshToken?: string;
+          refreshTokenExpires?: string;
+          scope?: string;
+          shop: string;
+          state?: string;
+        },
+        null,
         Name
       >;
       updateScopes: FunctionReference<
