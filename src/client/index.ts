@@ -1,8 +1,4 @@
-import type {
-  GenericDataModel,
-  GenericMutationCtx,
-  GenericQueryCtx,
-} from "convex/server";
+import type { GenericActionCtx, GenericDataModel } from "convex/server";
 import type { ComponentApi } from "../component/_generated/component.js";
 
 export type { ComponentApi };
@@ -57,9 +53,13 @@ export type ShopifySessionInput = {
   refreshTokenExpires?: string;
 };
 
-type QueryCtx = Pick<GenericQueryCtx<GenericDataModel>, "runQuery">;
+// Based on `GenericActionCtx` (the loosest run* signatures) on purpose: convex
+// 1.41 added a `transactionLimits` option to query/mutation-ctx run* methods
+// that action ctx lacks, so basing these on query/mutation ctx would reject
+// callers passing an action ctx — which these helpers are meant to accept.
+type QueryCtx = Pick<GenericActionCtx<GenericDataModel>, "runQuery">;
 type MutationCtx = Pick<
-  GenericMutationCtx<GenericDataModel>,
+  GenericActionCtx<GenericDataModel>,
   "runQuery" | "runMutation"
 >;
 
