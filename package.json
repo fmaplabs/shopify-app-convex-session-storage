@@ -6,7 +6,7 @@
     "bugs": {
         "url": "https://github.com/fmaplabs/shopify-app-convex-session-storage/issues"
     },
-    "version": "0.1.4",
+    "version": "0.1.5",
     "license": "MIT",
     "keywords": [
         "convex",
