@@ -8,11 +8,11 @@ import type { ShopifySession, ShopifySessionInput } from "./index.js";
  */
 export interface ConvexSessionClient {
   query<Output>(
-    name: string | { _returnType: Output },
+    name: string | { _type: "query" },
     args: Record<string, unknown>,
   ): Promise<Output>;
   mutation<Output>(
-    name: string | { _returnType: Output },
+    name: string | { _type: "mutation" },
     args: Record<string, unknown>,
   ): Promise<Output>;
 }
@@ -22,11 +22,11 @@ export interface ConvexSessionClient {
  * internal session CRUD operations.
  */
 export interface SessionFunctionRefs {
-  storeSession: string | { _returnType: unknown; _args: unknown };
-  loadSession: string | { _returnType: unknown; _args: unknown };
-  deleteSession: string | { _returnType: unknown; _args: unknown };
-  deleteSessions: string | { _returnType: unknown; _args: unknown };
-  findSessionsByShop: string | { _returnType: unknown; _args: unknown };
+  storeSession: string | { _type: "mutation" };
+  loadSession: string | { _type: "query" };
+  deleteSession: string | { _type: "mutation" };
+  deleteSessions: string | { _type: "mutation" };
+  findSessionsByShop: string | { _type: "query" };
 }
 
 function sessionToInput(session: Session): ShopifySessionInput {
